@@ -32,10 +32,10 @@
 
 * [🚀 Environment setup](#-environment-setup)
 * [🤔 Project explanation](#-project-explanation)
-  * [Starting example](#-starting-example)
-  * [InstaBot Object](#-instabot-object)
-  * [InstaBot Examples](#-instabot-examples)
-  * [Schedule Example](#-schedule-example)
+  * [Starting example](#starting-example)
+  * [InstaBot Object](#instabot-object)
+  * [InstaBot Examples](#instabot-examples)
+  * [Schedule Example](#schedule-example)
 * [👷‍ Pro Tips](#-pro-tips)
 * [🤝 Contributing](#-contributing)
 
