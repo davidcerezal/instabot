@@ -32,11 +32,11 @@
 
 * [🚀 Environment setup](#-environment-setup)
 * [🤔 Project explanation](#-project-explanation)
-  * [Starting example](#-ddd-skeleton)
-  * [InstaBot Object](#-django-rest-framework)
-  * [InstaBot Examples](#-django-rest-registration)
-  * [Schedule Example](#-celery)
-* [👷‍ Pro Tips](#-console-commands)
+  * [Starting example](#-starting-example)
+  * [InstaBot Object](#-instabot-object)
+  * [InstaBot Examples](#-instabot-examples)
+  * [Schedule Example](#-schedule-example)
+* [👷‍ Pro Tips](#-pro-tips)
 * [🤝 Contributing](#-contributing)
 
 ## 🚀 **Environment setup**
@@ -89,33 +89,42 @@ pip install instapy -U
 
 ## 🤔 Project explanation
 
-This project tries to be a full rest API platform for Indexacapital.
+In this paragraph are explained tha most usefull script that I created and used in Instagram automation. Anyways, I really encourage to see that <a href="https://github.com/InstaPy/instapy-quickstart/tree/master/quickstart_templates">starting examples</a> provided by InstaPy. Those three are the one that I use every day for my account.
 
 ###  Starting example
+
+If you start from scratch, the best script to execute is the <a href="https://github.com/davidcerezal/instabot/blob/main/starting_example_main.py">Starting example.</a> It has very few interactions so you should not be worried about the bans.
+
+Everything starts with `InstaPy(` new object. With that sentence a session is created and logged into your account. This session will lasts until the script is finished. 
 
 ```elm
 session = InstaPy(username=insta_username,
                   password=insta_password, 
                   headless_browser=True)
 ```
-
+This session managment is really relevant since the login is the most used tool to analyse bot used by Instagram's team. To handle that, we should use this `smart_run`that will remember your session in your server for the next executions. This means, for example if you creates a connection at 10pm and 12pm, the second one used the first session, **so you don't make 2 logins**.
 ```elm
 with smart_run(session):
 ```
 
+Before starting with the actions **is recommended to set a quota limits**, like that. In those limit you can customize almost anything to have limited your interactions.
 ```elm
 session.set_user_interact(amount=3, randomize=True, percentage=80,media='Photo')
 ```
 
+Ok, once you have a session and limits set, it's time to starts doing things. It's such a simple like that:
 ```elm
 session.set_do_like(enabled=True, percentage=90)
 ```
 
+In the library <a href="https://instapy.org/actions">actions documentation</a> you will find all the actions provided. They really have all kind of actions coded, so feel free to use all of them. For example, you can like by tag to cover a certain area of photos.
 ```elm
 session.like_by_tags(random.sample(like_tag_list, 3),
                     amount=random.randint(10, 20),interact=True)
 ```                         
 ###  InstaBot Object
+
+For my personal use I created a class to manage and makes simple all the connections and scripts. This class will creates the sessión, logs and manage all the execeptions. The main constructor is the next one. As can be seen, a lot of limit are customized with muy preferences. Try to find the ones that suits with you.
 
 ```elm
 class InstaBot:
@@ -141,6 +150,7 @@ def __init__(self, usr, pss, name):
                         peak_server_calls_daily=4700)
 ```   
 
+Loggin will be output to a file. This is file is the best way to check how your bot is working. Do not forget to check it at least once a week.
 
 ```elm
     logging.error('Login completed '+self.getTime()+' by '+self.name)
@@ -148,6 +158,7 @@ except:
     logging.critical('Login failed '+self.getTime()+' by '+self.name)
 ```       
 
+An action can be for example `follow` that apart from following other account, creates some limits before.
 ```elm
 def follow(self, list, number_of_users):
 try:
@@ -164,7 +175,7 @@ except:
 
 ###  InstaBot Examples
 
-
+Once you have created the `InstaBot` object you can simply one of those actions:
 ```elm  
 def follow(self, list, number_of_users):
 
@@ -179,6 +190,7 @@ def unfollow(self, number_of_users):
 def like(self, list, interactions):       
 ```                      
 
+And as a result, the script seems as simple as that:
 ```elm
 from main import InstaBot
 
@@ -193,12 +205,13 @@ bot.end()
 
       
 ###  Schedule Example
-Bootstrap your new projects or be inspired by DDD and hexagonal architecture. 
+As you may expect this library need to be scheduled. The first option to do it is through `crons`. You can find how to creates a cron execution in the <a href="https://instapy.org/automate-instapy/#cron">docs.</a> But apart from the old and classic ways of doing things there is one new way to do things: <a href="https://pypi.org/project/schedule/"> Schedule</a>
 
 ```elm
 import schedule
 ```   
 
+With that library you can easily define a function like that.
 ```elm
 def cron_follow():
   session = InstaPy(username='xxxx', password='passs',headless_browser=True)    
@@ -218,7 +231,7 @@ def cron_follow():
   session.end()
  ```    
 
-
+And with a sentence schedule the execution of that function. The last code ensures the unlimited execution of the code. **With that way we try to minize the logins attemps**.
 
 ```elm
 schedule.every().day.at("02:35").do(cron_unfollow)
